@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-    <title></title>
+    <title>Weather</title>
 
     <link href="lib/ionic/css/ionic.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
@@ -26,36 +26,16 @@
   </head>
   <body ng-app="weather">
 
-    <ion-pane>
-      <ion-header-bar class="bar-calm">
-        <h1 class="title">Weather</h1>
-      </ion-header-bar>
-      <ion-content ng-controller="MainCtrl">
-        <div class="card">
-          <div class="item item-divider">
-            Enter a city
-          </div>
-          <div class="item">
-            <input type="text" placeholder="City name, e.g. Amsterdam" ng-model="city">
-          </div>
-          <div class="item">
-            <button type="submit" class="button button-block button-calm" ng-click="fetchWeather()">
-              Get the weather
-            </button>
-          </div>
-          <div class="item item-divider" style="text-align:center" ng-show="weatherfetched">
-            Current weather in<br />{{weather.city}}
-          </div>
-          <div class="item" ng-show="weatherfetched">
-              <div class="row">
-              <div class="col" align="center"><img ng-src="{{weather.image}}" /></div>
-              <div class="col" align="center" ng-bind-html="weather.description"></div>
-              <div class="col" align="center">{{weather.temperature}} &deg; C</div>
-            </div>
-          </div>
-        </div>
-      </ion-content>
-    </ion-pane>
+    <ion-nav-bar class="bar-stable">
+      <ion-nav-back-button>
+      </ion-nav-back-button>
+    </ion-nav-bar>
+    <!--
+      The views will be rendered in the <ion-nav-view> directive below
+      Templates are in the /templates folder (but you could also
+      have templates inline in this html file if you'd like).
+    -->
+    <ion-nav-view></ion-nav-view>
 
   </body>
 </html>

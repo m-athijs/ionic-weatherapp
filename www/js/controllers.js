@@ -1,32 +1,49 @@
 angular.module('weather.controllers', [])
 
-.controller('MainCtrl', ['$scope', 'WorldWeatherOnline', 'GeoCoder', function($scope, WorldWeatherOnline, GeoCoder) {
+.controller('SearchCtrl', ['$scope', '$state', '$stateParams', 'WorldWeatherOnline', 'GeoCoder', 'SavedLocations', function($scope, $state, $stateParams, WorldWeatherOnline, GeoCoder, SavedLocations) {
 
-	$scope.fetchWeather = function() {
+	init();
 
+	function init() {
+		// initialize the variables
+		$scope.weather = { city: null, image: null, description: null, temperature: null, searchterm: null };
+		var selectedSavedLocation = SavedLocations.getSelectedSavedLocation();
+		if (selectedSavedLocation != null) {
+			$scope.weather.searchterm = selectedSavedLocation;
+			getWeather(selectedSavedLocation);
+		} else {
+			navigator.geolocation.getCurrentPosition(onSuccess, onError);
+		}
+	}
+
+	$scope.fetchWeather = function(city) {
+		getWeather(city);
+	};
+
+	function getWeather(city) {
 		$scope.weatherfetched = false;
 
-		if ($scope.city != null && $scope.city != '')
+		if (city != null && city != '')
 		{
-			WorldWeatherOnline.getWeather(encodeURI($scope.city)).then(function(data) {
+			WorldWeatherOnline.getWeather(encodeURI(city)).then(function(data) {
 				if (data.weather != null) {
 					$scope.weather = data.weather;
+					//vm.weather = data.weather;
 					$scope.weatherfetched = true;
-					$scope.city = '';
 				} else {
 					$scope.weatherfetched = false;
 				}
 			});
-			
-  		}
+		}
+	}
+
+	$scope.saveLocation = function() {
+		SavedLocations.addSavedLocation($scope.weather.city);
+		// Show the Saved Locations tabs
+		$state.go('tab.saved');
 	};
 
-	// Get the current GPS coordinates
-	navigator.geolocation.getCurrentPosition(onSuccess, onError); 
-
 	function onSuccess(position) {
-		// initialize the variable
-		$scope.weather = { city: null, image: null, description: null, temperature: null };
 
 		// Get the weather for the current GPS coordinates from WorldWeatherOnline as a promise
 		WorldWeatherOnline.getWeather(encodeURI(position.coords.latitude + ',' + position.coords.longitude )).then(function(data) {
@@ -43,5 +60,35 @@ angular.module('weather.controllers', [])
 	function onError(error) {
 		alert('ERROR!\n\ncode: ' + error.code + '\n' + 'message: ' + error.message + '\n');
 	}
+
+}])
+
+.controller('SavedCtrl', ['$scope', '$state', '$location', 'SavedLocations', function($scope, $state, $location, SavedLocations) {
+
+	init();
+
+	function init() {
+		$scope.showHide = "Show";
+		$scope.savedLocations = SavedLocations.getSavedLocations();
+	}
+
+	$scope.removeSavedLocation = function(index) {
+		SavedLocations.removeSavedLocation(index);
+		$scope.savedLocations = SavedLocations.getSavedLocations();
+	};
+
+	$scope.showHideDeleteButtons = function() {
+		$scope.showDelete = !$scope.showDelete;
+		if ($scope.showHide == "Show") {
+			$scope.showHide = "Hide";
+		} else {
+			$scope.showHide = "Show";
+		}
+	};
+
+	$scope.getWeatherWithCity = function(savedLocation) {
+		SavedLocations.setSelectedSavedLocation(savedLocation);
+		$state.go('tab.search');
+	};
 
 }]);
