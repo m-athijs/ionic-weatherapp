@@ -1,0 +1,34 @@
+<ion-view cache-view="false" view-title="Search Location">
+  <ion-content class="padding">
+
+     <div class="card">
+      <form name="weatherForm" ng-submit="fetchWeather(weather.searchterm)">
+        <div class="item item-divider">
+          Enter a city
+        </div>
+        <div class="item">
+          <input type="text" placeholder="City name, e.g. Amsterdam" ng-model="weather.searchterm">
+        </div>
+        <div class="item">
+            <button type="submit" class="button button-block button-calm">
+              Get the weather
+            </button>
+        </div>
+      </form>
+      <div class="item item-divider" style="text-align:center" ng-show="weatherfetched">
+        Current weather in<br />{{weather.city}}
+      </div>
+      <div class="item" ng-show="weatherfetched">
+          <div class="row">
+          <div class="col" align="center"><img ng-src="{{weather.image}}" /></div>
+          <div class="col" align="center" ng-bind-html="weather.description"></div>
+          <div class="col" align="center">{{weather.temperature}} &deg; C</div>
+        </div>
+      </div>
+      <div class="item" ng-show="weatherfetched">
+        <a class="button icon-left ion-plus button-light" style="float: right;" ng-click="saveLocation()">Save location</a>
+      </div>
+    </div>
+
+  </ion-content>
+</ion-view>
